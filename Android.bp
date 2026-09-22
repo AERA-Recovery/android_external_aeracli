@@ -1,0 +1,36 @@
+package {
+    default_applicable_licenses: ["aeracli_license"],
+}
+
+license {
+    name: "aeracli_license",
+    visibility: [":__subpackages__"],
+    license_kinds: ["SPDX-license-identifier-Apache-2.0"],
+    license_text: ["LICENSE"],
+}
+
+cc_defaults {
+    name: "aeracli_defaults",
+    srcs: ["src/main.cpp"],
+    static_libs: ["libjsoncpp"],
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-DAERA_CLI_VERSION=\"1.0.0\"",
+    ],
+}
+
+cc_binary {
+    name: "aeracli",
+    stem: "aera",
+    defaults: ["aeracli_defaults"],
+    recovery: true,
+}
+
+// Host variant used to validate request construction without a device.
+cc_binary_host {
+    name: "aeracli_host",
+    stem: "aera-host",
+    defaults: ["aeracli_defaults"],
+}
