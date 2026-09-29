@@ -16,10 +16,17 @@ aera mount /data
 aera flash /sdcard/update.zip
 aera backup --parts boot,data --name before-update --compress
 aera wifi connect --ssid MyNetwork --password-stdin
-aera reboot fastboot
+aera transition fastboot
+aera transition recovery
+aera reboot bootloader
 aera --json status
 aera --dry-run backup --parts boot,data
 ```
+
+`aera transition fastboot` switches the running AERA interface into userspace
+fastboot without rebooting the device. From fastboot, use
+`aera transition recovery` over ADB over Wi-Fi to return to recovery. Hardware
+bootloader remains the separate `aera reboot bootloader` command.
 
 The following command names are reserved for future native implementations but
 are deliberately rejected for now: `reflash`, `addons`, `control`, `input`,

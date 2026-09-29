@@ -79,6 +79,7 @@ void PrintUsage(FILE* out) {
       "  restore --name NAME [--parts LIST] [--no-digest-check]\n"
       "  decrypt [PASSWORD|--password-stdin] [--user ID]\n"
       "  wipe [PARTITION...]         format-data --confirm\n"
+      "  transition fastboot|recovery\n"
       "  reboot TARGET               wifi ACTION [options]\n"
       "  partition PATH ACTION [FS]  mtp ACTION\n\n"
       "Reserved (unsupported for now):\n"
@@ -406,7 +407,17 @@ BuiltRequest BuildRequest(const std::vector<std::string>& args) {
   }
   if (command == "reboot") {
     if (args.size() != 2) return Error("reboot requires a target");
+    if (args[1] == "fastboot")
+      return Error("use 'aera transition fastboot'; hardware bootloader is 'aera reboot bootloader'");
     BuiltRequest out = BaseRequest("reboot");
+    out.root["args"]["target"] = args[1];
+    return out;
+  }
+  if (command == "transition") {
+    if (args.size() != 2 ||
+        (args[1] != "fastboot" && args[1] != "recovery"))
+      return Error("transition requires fastboot or recovery");
+    BuiltRequest out = BaseRequest("transition");
     out.root["args"]["target"] = args[1];
     return out;
   }
